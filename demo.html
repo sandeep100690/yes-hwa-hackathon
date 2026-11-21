@@ -210,6 +210,30 @@
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+    /* Demo countdown */
+    .demo-timer {
+      position: absolute;
+      left: 16px; bottom: 16px;
+      z-index: 45;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(15,23,42,0.78);
+      border: 1px solid rgba(148,163,184,0.28);
+      backdrop-filter: blur(10px);
+      color: #e2e8f0;
+      padding: 9px 14px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      transition: background 0.3s, color 0.3s, border-color 0.3s;
+    }
+    .demo-timer .clock { font-size: 1rem; opacity: 0.9; }
+    .demo-timer.warn { color: #fde68a; border-color: rgba(251,191,36,0.5); }
+    .demo-timer.danger { color: #fecaca; border-color: rgba(239,68,68,0.6); background: rgba(127,29,29,0.55); animation: timerPulse 1s infinite; }
+    @keyframes timerPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
     @media (max-width: 560px) {
       .controls { gap: 6px; padding: 6px; }
       .controls a, .controls button { font-size: 0.78rem; padding: 8px 10px; }
@@ -229,6 +253,11 @@
       <source src="/assets/cat-playing.mp4" type="video/mp4">
     </video>
     <div class="bg-overlay" id="bg-overlay"></div>
+
+    <div class="demo-timer" id="demo-timer" title="Time left in this demo">
+      <span class="clock">&#9201;</span>
+      <span id="timer-text">2:00</span>
+    </div>
 
     <div class="controls">
       <a href="/" title="Back to shop">&larr; Shop</a>
@@ -488,6 +517,32 @@
         hint.classList.remove('hide');
         showToast('Ball reset');
       });
+
+      // --- Demo countdown (2 minutes, then back to the shop) ---
+      const timerText = document.getElementById('timer-text');
+      const timerPill = document.getElementById('demo-timer');
+      let demoRemaining = 120;
+      function fmtDemoTime(s) {
+        var m = Math.floor(s / 60);
+        var sec = s % 60;
+        return m + ':' + String(sec).padStart(2, '0');
+      }
+      timerText.textContent = fmtDemoTime(demoRemaining);
+      var demoTimerId = setInterval(function () {
+        demoRemaining--;
+        if (demoRemaining <= 0) {
+          clearInterval(demoTimerId);
+          timerText.textContent = '0:00';
+          window.location.href = '/';
+          return;
+        }
+        timerText.textContent = fmtDemoTime(demoRemaining);
+        if (demoRemaining <= 10) {
+          timerPill.classList.add('danger');
+        } else if (demoRemaining <= 30) {
+          timerPill.classList.add('warn');
+        }
+      }, 1000);
 
       // --- Init ---
       function init() {
