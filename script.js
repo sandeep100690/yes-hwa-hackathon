@@ -6,7 +6,6 @@ let timerInterval = null;
 let throwInterval = null;
 
 // DOM
-const totalPriceEl = document.getElementById('total-price');
 const addBtn = document.getElementById('add-to-cart');
 const cartCountEl = document.getElementById('cart-count');
 const cartLink = document.getElementById('cart-link');
