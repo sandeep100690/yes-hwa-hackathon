@@ -3,6 +3,7 @@
   "builds": [
     { "src": "index.html", "use": "@vercel/static" },
     { "src": "demo.html", "use": "@vercel/static" },
+    { "src": "dashboard.html", "use": "@vercel/static" },
     { "src": "style.css", "use": "@vercel/static" },
     { "src": "script.js", "use": "@vercel/static" },
     { "src": "assets/dog-playing.mp4", "use": "@vercel/static" },
@@ -10,6 +11,7 @@
   ],
   "routes": [
     { "src": "/demo.html", "dest": "/demo.html" },
+    { "src": "/dashboard.html", "dest": "/dashboard.html" },
     { "src": "/assets/dog-playing.mp4", "dest": "/assets/dog-playing.mp4" },
     { "src": "/assets/cat-playing.mp4", "dest": "/assets/cat-playing.mp4" },
     { "src": "/style.css", "headers": { "cache-control": "s-maxage=31536000, immutable" } },

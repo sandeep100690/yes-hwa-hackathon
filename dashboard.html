@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PupPlay | Dashboard</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --accent: #f97316;
+      --green: #10b981;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --radius: 16px;
+      --shadow: 0 10px 30px -12px rgba(15,23,42,0.12);
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+
+    /* Header */
+    .dash-header {
+      background: var(--card);
+      border-bottom: 1px solid var(--line);
+      position: sticky; top: 0; z-index: 50;
+    }
+    .dash-header .wrap { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+    .logo { font-size: 1.4rem; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; }
+    .logo span { color: var(--accent); }
+    .dash-nav { display: flex; gap: 8px; align-items: center; }
+    .dash-nav a {
+      font-size: 0.9rem; font-weight: 600; color: var(--muted);
+      padding: 8px 14px; border-radius: 10px; transition: background 0.15s, color 0.15s;
+    }
+    .dash-nav a:hover { background: var(--bg); color: var(--primary); }
+    .dash-nav a.active { background: #eff6ff; color: var(--primary); }
+
+    main { padding: 32px 0 60px; }
+    .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 26px; }
+    .page-head h1 { font-size: 1.9rem; letter-spacing: -0.6px; }
+    .page-head p { color: var(--muted); margin-top: 4px; max-width: 560px; }
+    .btn-primary, .btn-outline {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 11px 20px; border-radius: 10px; font-weight: 700; font-size: 0.92rem;
+      cursor: pointer; border: 2px solid transparent; transition: background 0.15s, transform 0.1s, opacity 0.15s;
+    }
+    .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn-primary:hover { background: var(--primary-dark); border-color: var(--primary-dark); }
+    .btn-outline { background: transparent; color: var(--primary); border-color: var(--primary); }
+    .btn-outline:hover { background: var(--primary); color: #fff; }
+    .btn-primary:active, .btn-outline:active { transform: scale(0.97); }
+    .btn-primary:disabled, .btn-outline:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    /* Stats */
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 22px; }
+    .stat {
+      background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 18px 20px; box-shadow: var(--shadow);
+    }
+    .stat-label { display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--muted); margin-bottom: 8px; }
+    .stat-value { font-size: 1.9rem; font-weight: 800; letter-spacing: -0.5px; color: var(--text); display: flex; align-items: baseline; gap: 4px; }
+    .stat-value small { font-size: 0.85rem; font-weight: 600; color: var(--muted); }
+    .stat-value.status { font-size: 1.15rem; }
+    .stat-value.status.playing { color: var(--green); }
+    .stat-value.status.idle { color: var(--muted); }
+
+    /* Panels */
+    .panel {
+      background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 24px;
+    }
+    .live-panel { display: grid; grid-template-columns: 320px 1fr; gap: 24px; margin-bottom: 26px; }
+    .panel h2 { font-size: 1.2rem; margin-bottom: 16px; letter-spacing: -0.3px; }
+
+    .controls { display: flex; flex-direction: column; gap: 14px; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-size: 0.82rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .field input[type="time"] {
+      padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; font-size: 1rem; font-family: inherit;
+      color: var(--text); background: #f8fafc;
+    }
+    .range-row { display: flex; align-items: center; justify-content: space-between; }
+    .range-row b { color: var(--primary); font-size: 1rem; }
+    input[type="range"] { width: 100%; accent-color: var(--primary); cursor: pointer; }
+    .check-row { display: flex; align-items: center; gap: 10px; font-size: 0.92rem; font-weight: 600; color: var(--text); cursor: pointer; }
+    .check-row input { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; }
+    .btn-row { display: flex; gap: 10px; margin-top: 4px; }
+    .btn-row button { flex: 1; }
+
+    /* Arena */
+    .arena-wrap { display: flex; flex-direction: column; gap: 12px; }
+    .arena {
+      position: relative; width: 100%; height: 300px; border-radius: 14px;
+      background:
+        radial-gradient(circle at 50% 120%, #1e3a8a 0%, #0f172a 55%),
+        radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 60%);
+      overflow: hidden; border: 1px solid #1e293b;
+    }
+    .arena::after {
+      content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 40%;
+      background: linear-gradient(180deg, transparent, rgba(16,185,129,0.12)); pointer-events: none;
+    }
+    .arena-box {
+      position: absolute; left: 50%; top: 50%; width: 110px; height: 110px;
+      margin: -55px 0 0 -55px; border: 5px solid #334155; border-radius: 50%;
+      background: radial-gradient(circle at 50% 40%, #1e293b, #0b1220);
+      box-shadow: inset 0 0 24px rgba(0,0,0,0.6);
+    }
+    .arena-box::before { content: ""; position: absolute; inset: 12px; border-radius: 50%; border: 2px dashed rgba(34,211,238,0.3); }
+    .arena-ball {
+      position: absolute; left: 50%; top: 50%; width: 64px; height: 64px;
+      margin: -32px 0 0 -32px; z-index: 3;
+      transition: transform 0.55s cubic-bezier(0.34, 1.3, 0.64, 1);
+      filter: drop-shadow(0 8px 14px rgba(0,0,0,0.45));
+      will-change: transform;
+    }
+    .arena-ball svg { width: 100%; height: 100%; display: block; }
+    .arena-status {
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+      font-size: 0.9rem; font-weight: 600;
+    }
+    .arena-status .state {
+      display: inline-flex; align-items: center; gap: 8px; color: var(--text);
+      background: #f1f5f9; padding: 8px 14px; border-radius: 999px;
+    }
+    .arena-status .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); }
+    .arena-status .state.playing .dot { background: var(--green); box-shadow: 0 0 0 0 rgba(16,185,129,0.5); animation: pulse 1.4s infinite; }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.5); } 70% { box-shadow: 0 0 0 10px rgba(16,185,129,0); } 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); } }
+    .arena-status .dir { color: var(--muted); font-weight: 600; }
+
+    /* Section titles */
+    .section-title { font-size: 1.3rem; letter-spacing: -0.3px; margin: 8px 0 16px; }
+    .section-sub { color: var(--muted); font-size: 0.92rem; margin: -10px 0 18px; }
+
+    /* Feature grid */
+    .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 30px; }
+    .feature {
+      background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 20px; box-shadow: var(--shadow); transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .feature:hover { transform: translateY(-3px); box-shadow: 0 16px 34px -14px rgba(15,23,42,0.2); }
+    .feature .ico {
+      width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; margin-bottom: 14px; background: #eff6ff;
+    }
+    .feature h3 { font-size: 1.02rem; margin-bottom: 6px; }
+    .feature p { font-size: 0.9rem; color: var(--muted); line-height: 1.55; }
+    .feature .tag { display: inline-block; margin-top: 12px; font-size: 0.72rem; font-weight: 700; color: var(--primary); background: #eff6ff; padding: 4px 10px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.4px; }
+
+    /* Chart */
+    .chart-panel { margin-bottom: 20px; }
+    .chart { display: flex; align-items: flex-end; gap: 12px; height: 180px; padding-top: 10px; }
+    .chart-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; height: 100%; justify-content: flex-end; }
+    .chart-bar-wrap { width: 100%; flex: 1; display: flex; align-items: flex-end; }
+    .chart-bar {
+      width: 100%; border-radius: 8px 8px 4px 4px;
+      background: linear-gradient(180deg, #60a5fa, #2563eb);
+      min-height: 4px; transition: height 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+      position: relative;
+    }
+    .chart-col.today .chart-bar { background: linear-gradient(180deg, #fbbf24, #f97316); }
+    .chart-bar .val { position: absolute; top: -22px; left: 0; right: 0; text-align: center; font-size: 0.78rem; font-weight: 700; color: var(--muted); }
+    .chart-col .lbl { font-size: 0.78rem; font-weight: 700; color: var(--muted); }
+    .chart-col.today .lbl { color: var(--accent); }
+
+    .foot-note { text-align: center; color: var(--muted); font-size: 0.85rem; margin-top: 18px; }
+
+    @media (max-width: 860px) {
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .live-panel { grid-template-columns: 1fr; }
+      .features { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 560px) {
+      .dash-nav a { padding: 7px 10px; font-size: 0.82rem; }
+      .page-head h1 { font-size: 1.5rem; }
+      .stats { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .stat-value { font-size: 1.5rem; }
+      .features { grid-template-columns: 1fr; }
+      .arena { height: 260px; }
+      .chart { gap: 6px; }
+      .chart-col .lbl { font-size: 0.68rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="dash-header">
+    <div class="wrap">
+      <a class="logo" href="/">Pup<span>Play</span></a>
+      <nav class="dash-nav">
+        <a href="/dashboard.html" class="active">Dashboard</a>
+        <a href="/demo.html">Live Demo</a>
+        <a href="/">Shop</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="page-head">
+      <div>
+        <h1>PupPlay Dashboard</h1>
+        <p>Explore the product features and run the live simulator to see exactly how interactive the auto ball launcher is.</p>
+      </div>
+      <a href="/demo.html" class="btn-primary">Open Full Demo</a>
+    </div>
+
+    <!-- Stats -->
+    <section class="stats">
+      <div class="stat">
+        <span class="stat-label">Throws Today</span>
+        <span class="stat-value" id="stat-throws">0</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Play Time</span>
+        <span class="stat-value"><span id="stat-time">0:00</span></span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Sessions</span>
+        <span class="stat-value" id="stat-sessions">0</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Status</span>
+        <span class="stat-value status idle" id="stat-status">Idle</span>
+      </div>
+    </section>
+
+    <!-- Live control + arena -->
+    <section class="panel live-panel">
+      <div>
+        <h2>Live Play Control</h2>
+        <div class="controls">
+          <div class="field">
+            <label for="start">Start time</label>
+            <input type="time" id="start" value="09:00">
+          </div>
+          <div class="field">
+            <label for="end">End time</label>
+            <input type="time" id="end" value="17:00">
+          </div>
+          <div class="field">
+            <label for="delay">Relaunch delay</label>
+            <div class="range-row"><input type="range" id="delay" min="1" max="20" value="10"><b id="delay-val">10s</b></div>
+          </div>
+          <label class="check-row"><input type="checkbox" id="random-dir" checked> Random direction each throw</label>
+          <div class="btn-row">
+            <button class="btn-primary" id="start-btn">Start Session</button>
+            <button class="btn-outline" id="stop-btn" disabled>Stop</button>
+          </div>
+        </div>
+      </div>
+      <div class="arena-wrap">
+        <div class="arena" id="arena">
+          <div class="arena-box"></div>
+          <div class="arena-ball" id="arena-ball">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="bg1" cx="35%" cy="30%" r="75%">
+                  <stop offset="0%" stop-color="#fff9c4"/>
+                  <stop offset="45%" stop-color="#fbe13b"/>
+                  <stop offset="100%" stop-color="#c99a0b"/>
+                </radialGradient>
+              </defs>
+              <circle cx="50" cy="50" r="48" fill="url(#bg1)"/>
+              <path d="M6,38 Q50,50 6,62" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" opacity="0.9"/>
+              <path d="M94,38 Q50,50 94,62" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" opacity="0.9"/>
+              <circle cx="36" cy="30" r="9" fill="#fff" opacity="0.28"/>
+            </svg>
+          </div>
+        </div>
+        <div class="arena-status">
+          <span class="state" id="state-pill"><span class="dot"></span><span id="arena-state">Idle</span></span>
+          <span class="dir" id="arena-dir">Direction: &mdash;</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <h2 class="section-title">Product Features</h2>
+    <p class="section-sub">Everything the launcher does to keep your dog happy and busy while you're away.</p>
+    <section class="features">
+      <div class="feature">
+        <div class="ico">&#9200;</div>
+        <h3>Programmable Timer</h3>
+        <p>Set an exact start and end time. The launcher only plays inside your chosen window.</p>
+        <span class="tag">Start &amp; End</span>
+      </div>
+      <div class="feature">
+        <div class="ico">&#127939;</div>
+        <h3>Automatic Relaunch</h3>
+        <p>Once the ball returns to the box, it is thrown again automatically &mdash; no owner needed.</p>
+        <span class="tag">Hands-free</span>
+      </div>
+      <div class="feature">
+        <div class="ico">&#8987;</div>
+        <h3>10-Second Delay</h3>
+        <p>A short pause between throws gives your dog time to fetch and drop the ball back in.</p>
+        <span class="tag">Adjustable</span>
+      </div>
+      <div class="feature">
+        <div class="ico">&#127919;</div>
+        <h3>Random Directions</h3>
+        <p>Every throw goes a different way, keeping play exciting and your dog on the move.</p>
+        <span class="tag">Dynamic</span>
+      </div>
+      <div class="feature">
+        <div class="ico">&#128263;</div>
+        <h3>Quiet Motor</h3>
+        <p>A whisper-quiet mechanism keeps the house calm while your dog plays.</p>
+        <span class="tag">Low noise</span>
+      </div>
+      <div class="feature">
+        <div class="ico">&#128267;</div>
+        <h3>USB Rechargeable</h3>
+        <p>Recharge over USB and keep the launcher running all day on a single charge.</p>
+        <span class="tag">All-day</span>
+      </div>
+    </section>
+
+    <!-- Chart -->
+    <section class="panel chart-panel">
+      <h2>Weekly Throws</h2>
+      <div class="chart" id="chart"></div>
+    </section>
+
+    <p class="foot-note">Run a session above and watch today's bar grow in real time.</p>
+  </main>
+
+  <script>
+    (function () {
+      const statThrows = document.getElementById('stat-throws');
+      const statTime = document.getElementById('stat-time');
+      const statSessions = document.getElementById('stat-sessions');
+      const statStatus = document.getElementById('stat-status');
+      const startInput = document.getElementById('start');
+      const endInput = document.getElementById('end');
+      const delayInput = document.getElementById('delay');
+      const delayVal = document.getElementById('delay-val');
+      const randomDir = document.getElementById('random-dir');
+      const startBtn = document.getElementById('start-btn');
+      const stopBtn = document.getElementById('stop-btn');
+      const arena = document.getElementById('arena');
+      const arenaBall = document.getElementById('arena-ball');
+      const arenaState = document.getElementById('arena-state');
+      const arenaDir = document.getElementById('arena-dir');
+      const statePill = document.getElementById('state-pill');
+      const chartEl = document.getElementById('chart');
+
+      let throws = 0;
+      let sessions = 0;
+      let active = false;
+      let phase = 'idle';
+      let elapsed = 0;
+      let startTs = 0;
+      let ticker = null;
+      let nextAt = 0;
+      let transTimer = null;
+      let launchTimer = null;
+      let dirToggle = 1;
+
+      const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+      const baseData = [12, 18, 9, 22, 15, 20, 0];
+      let weekData = baseData.slice();
+
+      function fmt(sec) {
+        const m = Math.floor(sec / 60);
+        const s = Math.floor(sec % 60);
+        return m + ':' + String(s).padStart(2, '0');
+      }
+
+      function setStatus(text, playing) {
+        arenaState.textContent = text;
+        statStatus.textContent = playing ? 'Playing' : 'Idle';
+        statStatus.classList.toggle('playing', !!playing);
+        statStatus.classList.toggle('idle', !playing);
+        statePill.classList.toggle('playing', !!playing);
+      }
+
+      function renderChart() {
+        const max = Math.max.apply(null, weekData.concat([1]));
+        chartEl.innerHTML = '';
+        weekData.forEach(function (v, i) {
+          const col = document.createElement('div');
+          col.className = 'chart-col' + (i === 6 ? ' today' : '');
+          const wrap = document.createElement('div');
+          wrap.className = 'chart-bar-wrap';
+          const bar = document.createElement('div');
+          bar.className = 'chart-bar';
+          bar.style.height = Math.max(4, (v / max) * 100) + '%';
+          if (v > 0) {
+            const val = document.createElement('span');
+            val.className = 'val';
+            val.textContent = v;
+            bar.appendChild(val);
+          }
+          wrap.appendChild(bar);
+          const lbl = document.createElement('span');
+          lbl.className = 'lbl';
+          lbl.textContent = DAYS[i];
+          col.appendChild(wrap);
+          col.appendChild(lbl);
+          chartEl.appendChild(col);
+        });
+      }
+
+      function updateTodayBar() {
+        weekData[6] = throws;
+        renderChart();
+      }
+
+      function launch() {
+        if (!active) return;
+        phase = 'launching';
+        throws++;
+        statThrows.textContent = throws;
+        updateTodayBar();
+
+        const w = arena.clientWidth;
+        const h = arena.clientHeight;
+        const dist = Math.min(w, h) * 0.34;
+        let angle;
+        if (randomDir.checked) {
+          angle = Math.random() * Math.PI * 2;
+        } else {
+          dirToggle *= -1;
+          angle = dirToggle > 0 ? (-0.35 + Math.random() * 0.2) : (Math.PI + 0.15 + Math.random() * 0.2);
+        }
+        const dx = Math.cos(angle) * dist;
+        const dy = Math.sin(angle) * dist * 0.62;
+        const deg = ((angle * 180 / Math.PI) % 360 + 360) % 360;
+
+        arenaBall.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+        setStatus('Launching\u2026', true);
+        arenaDir.textContent = 'Direction: ' + Math.round(deg) + '\u00b0';
+
+        transTimer = setTimeout(function () {
+          if (!active) return;
+          phase = 'returning';
+          arenaBall.style.transform = 'translate(0,0)';
+          setStatus('Returning\u2026', true);
+
+          transTimer = setTimeout(function () {
+            if (!active) return;
+            phase = 'wait';
+            const delay = parseInt(delayInput.value, 10);
+            nextAt = Date.now() + delay * 1000;
+            arenaState.textContent = 'Next in ' + delay + 's';
+            launchTimer = setTimeout(launch, delay * 1000);
+          }, 650);
+        }, 650);
+      }
+
+      function startSession() {
+        if (active) return;
+        active = true;
+        phase = 'launching';
+        sessions++;
+        statSessions.textContent = sessions;
+        elapsed = 0;
+        startTs = Date.now();
+        statTime.textContent = '0:00';
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+        setStatus('Starting\u2026', true);
+        launch();
+        ticker = setInterval(function () {
+          elapsed = (Date.now() - startTs) / 1000;
+          statTime.textContent = fmt(elapsed);
+          if (phase === 'wait' && active) {
+            const rem = Math.max(0, Math.ceil((nextAt - Date.now()) / 1000));
+            arenaState.textContent = 'Next in ' + rem + 's';
+          }
+        }, 250);
+      }
+
+      function stopSession() {
+        active = false;
+        phase = 'idle';
+        clearInterval(ticker);
+        clearTimeout(transTimer);
+        clearTimeout(launchTimer);
+        arenaBall.style.transform = 'translate(0,0)';
+        arenaDir.textContent = 'Direction: \u2014';
+        setStatus('Idle', false);
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+      }
+
+      delayInput.addEventListener('input', function () {
+        delayVal.textContent = delayInput.value + 's';
+      });
+      startBtn.addEventListener('click', startSession);
+      stopBtn.addEventListener('click', stopSession);
+
+      renderChart();
+      setStatus('Idle', false);
+    })();
+  </script>
+</body>
+</html>
