@@ -235,6 +235,34 @@
     .demo-timer.danger { color: #fecaca; border-color: rgba(239,68,68,0.6); background: rgba(127,29,29,0.55); animation: timerPulse 1s infinite; }
     @keyframes timerPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
 
+    /* Demo popup */
+    .demo-popup { display: none; }
+    .popup-backdrop {
+      position: fixed; inset: 0; background: rgba(15,23,42,0.8);
+      backdrop-filter: blur(6px); z-index: 100; display: flex; align-items: center; justify-content: center;
+    }
+    .popup-card {
+      background: #0f172a; border: 1px solid rgba(148,163,184,0.35); border-radius: 20px;
+      padding: 32px 28px; text-align: center; max-width: 440px; width: 90vw; position: relative; z-index: 101;
+      box-shadow: 0 24px 60px -12px rgba(0,0,0,0.7);
+    }
+    .popup-icon { font-size: 2.6rem; margin-bottom: 14px; display: block; }
+    .popup-title { font-size: 1.55rem; margin-bottom: 10px; color: #fff; letter-spacing: -0.3px; }
+    .popup-msg { color: #cbd5e1; font-size: 1.05rem; line-height: 1.55; margin-bottom: 24px; }
+    .popup-msg span { color: #22d3ee; font-weight: 800; }
+    .popup-actions { display: flex; gap: 12px; flex-direction: column; align-items: center; }
+    .popup-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 22px; border-radius: 10px; font-weight: 700; font-size: 1rem; border: none; cursor: pointer; text-decoration: none; transition: transform 0.1s, opacity 0.2s, background 0.15s; }
+    .popup-btn:active { transform: scale(0.97); }
+    .popup-shop { background: #2563eb; color: #fff; }
+    .popup-shop:hover { background: #1d4ed8; }
+    .popup-continue { background: transparent; color: #22d3ee; border: 2px solid rgba(34,211,238,0.55); }
+    .popup-continue:hover { background: rgba(34,211,238,0.1); }
+    @media (max-width: 560px) {
+      .popup-card { padding: 26px 20px; width: 94vw; }
+      .popup-actions { flex-direction: column; width: 100%; }
+      .popup-btn { width: 100%; }
+    }
+
     @media (max-width: 560px) {
       .controls { gap: 6px; padding: 6px; }
       .controls a, .controls button { font-size: 0.78rem; padding: 8px 10px; }
@@ -300,6 +328,31 @@
     <div class="toast" id="toast"></div>
   </div>
 
+  <!-- Demo limit popup -->
+  <div class="demo-popup" id="demo-limit-popup" aria-hidden="true">
+    <div class="popup-backdrop"></div>
+    <div class="popup-card">
+      <div class="popup-icon">&#128680;</div>
+      <h2 class="popup-title">Demo Limit Reached</h2>
+      <p class="popup-msg">You've used all 5 demo sessions. Buy your own PupPlay launcher to keep playing.</p>
+      <a href="/" class="popup-btn popup-shop">Shop Now</a>
+    </div>
+  </div>
+
+  <!-- Demo info popup -->
+  <div class="demo-popup" id="demo-popup" aria-hidden="true">
+    <div class="popup-backdrop" id="popup-backdrop"></div>
+    <div class="popup-card">
+      <div class="popup-icon">&#128222;</div>
+      <h2 class="popup-title">Demo Mode</h2>
+      <p class="popup-msg">This is a demo page. You will be redirected back to the shop in <span id="popup-countdown">1:30</span>.</p>
+      <div class="popup-actions">
+        <a href="/" class="popup-btn popup-shop">Shop Now</a>
+        <button id="popup-continue" class="popup-btn popup-continue">Continue to Demo</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     (function () {
       const demo = document.getElementById('demo');
@@ -313,6 +366,57 @@
       const bgOverlay = document.getElementById('bg-overlay');
       const bgVids = [document.getElementById('bgvid1'), document.getElementById('bgvid2')];
       const fsClose = document.getElementById('fs-close');
+
+      // --- Demo limit + info popup ---
+      const MAX_DEMOS = 5;
+      const DEMO_KEY = 'pupplay_demo_count';
+      const popup = document.getElementById('demo-popup');
+      const limitPopup = document.getElementById('demo-limit-popup');
+      const backdrop = document.getElementById('popup-backdrop');
+      const continueBtn = document.getElementById('popup-continue');
+      const popupCountdown = document.getElementById('popup-countdown');
+
+      let demoBlocked = false;
+      let demoCount = 0;
+      try { demoCount = parseInt(localStorage.getItem(DEMO_KEY) || '0', 10); } catch (e) {}
+
+      function openPopup(el) {
+        el.removeAttribute('aria-hidden');
+        backdrop.style.display = 'flex';
+      }
+      function closePopup(el) {
+        el.setAttribute('aria-hidden', 'true');
+        backdrop.style.display = 'none';
+      }
+
+      if (demoCount >= MAX_DEMOS) {
+        demoBlocked = true;
+        openPopup(limitPopup);
+      } else {
+        demoCount++;
+        try { localStorage.setItem(DEMO_KEY, demoCount); } catch (e) {}
+        openPopup(popup);
+        let popupRemaining = 90;
+        function fmtPopupTime(s) {
+          var m = Math.floor(s / 60);
+          var sec = s % 60;
+          return m + ':' + String(sec).padStart(2, '0');
+        }
+        popupCountdown.textContent = fmtPopupTime(popupRemaining);
+        var popupTimerId = setInterval(function () {
+          popupRemaining--;
+          popupCountdown.textContent = fmtPopupTime(popupRemaining);
+          if (popupRemaining <= 0) {
+            clearInterval(popupTimerId);
+            closePopup(popup);
+            window.location.href = '/';
+          }
+        }, 1000);
+        continueBtn.addEventListener('click', function () {
+          clearInterval(popupTimerId);
+          closePopup(popup);
+        });
+      }
 
       let W = 0, H = 0, SIZE = 120;
       let x = 0, y = 0, vx = 0, vy = 0;
@@ -557,9 +661,9 @@
       window.addEventListener('orientationchange', function () { setTimeout(measure, 200); });
 
       if (document.readyState === 'complete' || document.readyState === 'interactive') {
-        init();
+        if (!demoBlocked) init();
       } else {
-        window.addEventListener('DOMContentLoaded', init);
+        window.addEventListener('DOMContentLoaded', function () { if (!demoBlocked) init(); });
       }
       window.addEventListener('load', function () { setTimeout(measure, 50); });
     })();
