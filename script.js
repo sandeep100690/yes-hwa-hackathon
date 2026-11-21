@@ -2,14 +2,10 @@ const PRICE = 50.00;
 const PRODUCT = { id: 'pupplay-1', name: 'PupPlay Auto Ball Launcher', price: PRICE };
 
 let cart = [];
-let qty = 1;
 let timerInterval = null;
 let throwInterval = null;
 
 // DOM
-const qtyInput = document.getElementById('qty');
-const qtyDec = document.getElementById('qty-dec');
-const qtyInc = document.getElementById('qty-inc');
 const totalPriceEl = document.getElementById('total-price');
 const addBtn = document.getElementById('add-to-cart');
 const cartCountEl = document.getElementById('cart-count');
@@ -21,21 +17,6 @@ const cartClose = document.getElementById('cart-close');
 const cartItemsEl = document.getElementById('cart-items');
 const cartTotalPriceEl = document.getElementById('cart-total-price');
 const cartCheckout = document.getElementById('cart-checkout');
-
-// Quantity
-function updateTotalDisplay() {
-  totalPriceEl.textContent = '$' + (PRICE * qty).toFixed(2);
-}
-qtyDec.addEventListener('click', () => { if (qty > 1) { qty--; qtyInput.value = qty; updateTotalDisplay(); } });
-qtyInc.addEventListener('click', () => { if (qty < 99) { qty++; qtyInput.value = qty; updateTotalDisplay(); } });
-qtyInput.addEventListener('change', () => {
-  let v = parseInt(qtyInput.value, 10);
-  if (!v || v < 1) v = 1;
-  if (v > 99) v = 99;
-  qty = v;
-  qtyInput.value = qty;
-  updateTotalDisplay();
-});
 
 // Cart
 function saveCart() { try { localStorage.setItem('pupplay_cart', JSON.stringify(cart)); } catch (e) {} }
@@ -71,8 +52,8 @@ function renderCart() {
 }
 function addToCart() {
   const existing = cart.find(i => i.id === PRODUCT.id);
-  if (existing) existing.qty += qty;
-  else cart.push({ ...PRODUCT, qty });
+  if (existing) existing.qty += 1;
+  else cart.push({ ...PRODUCT, qty: 1 });
   saveCart();
   renderCart();
   openCart();
