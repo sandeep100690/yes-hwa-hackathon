@@ -61,29 +61,27 @@
     }
     .bg-overlay.off { opacity: 0; }
 
-    /* Top controls (below sliding ticker) */
+    /* Right-side vertical controls (below sliding ticker) */
     .controls {
-      position: absolute;
-      top: 8px; left: 50%;
-      transform: translateX(-50%);
+      position: fixed;
+      top: 48px; right: 16px;
       display: flex;
+      flex-direction: column;
       gap: 8px;
-      align-items: center;
-      flex-wrap: wrap;
-      justify-content: center;
+      align-items: flex-start;
       background: rgba(15,23,42,0.72);
       border: 1px solid rgba(148,163,184,0.25);
       backdrop-filter: blur(10px);
-      padding: 8px;
+      padding: 10px;
       border-radius: 14px;
-      z-index: 30;
-      max-width: 96vw;
+      z-index: 40;
+      max-width: 200px;
     }
     .controls a, .controls button {
       font: inherit;
       font-size: 0.85rem;
       font-weight: 700;
-      padding: 9px 14px;
+      padding: 10px 14px;
       border-radius: 10px;
       border: 1px solid rgba(148,163,184,0.25);
       background: rgba(255,255,255,0.06);
@@ -95,6 +93,8 @@
       gap: 6px;
       transition: background 0.15s, transform 0.1s;
       white-space: nowrap;
+      width: 100%;
+      justify-content: center;
     }
     .controls a:hover, .controls button:hover { background: rgba(255,255,255,0.14); }
     .controls button:active, .controls a:active { transform: scale(0.96); }
