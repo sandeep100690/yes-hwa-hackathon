@@ -100,6 +100,39 @@
     .controls button:active, .controls a:active { transform: scale(0.96); }
     .controls .primary { background: #2563eb; border-color: #2563eb; color: #fff; }
     .controls .primary:hover { background: #1d4ed8; }
+    .controls .btn-icon {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+    }
+    .controls .btn-icon .icon { font-size: 1rem; }
+    .controls .btn-icon .label { font-size: 0.8rem; }
+
+    /* Custom tooltip on hover */
+    .controls .btn-icon[title]:hover::after {
+      content: attr(title);
+      position: fixed;
+      left: 50%;
+      top: 60px;
+      transform: translateX(-50%);
+      background: #1e293b;
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      white-space: nowrap;
+      z-index: 100;
+      border: 1px solid rgba(148,163,184,0.3);
+      pointer-events: none;
+      animation: tooltipFade 0.15s ease;
+    }
+    @keyframes tooltipFade {
+      from { opacity: 0; transform: translateY(-50%) translateX(4px); }
+      to { opacity: 1; transform: translateY(-50%) translateX(0); }
+    }
+
     .controls .active { background: #10b981; border-color: #10b981; color: #06281c; }
 
     /* Fullscreen close button (shown only in fullscreen) */
@@ -306,12 +339,12 @@
     </div>
 
     <div class="controls">
-      <a href="/" title="Back to shop">&larr; Shop</a>
-      <button id="fullscreen-btn" class="primary" title="Go full screen">&#9974; Fullscreen</button>
-      <button id="auto-btn" title="Auto-launch like the real product">Auto Launch: Off</button>
-      <button id="video-btn" class="active" title="Toggle background video">Video: On</button>
-      <button id="reset-btn" title="Reset the ball">Reset</button>
-      <button id="glow-btn" title="Toggle ball glow">Glow: Off</button>
+      <a href="/" title="Back to shop" class="btn-icon"><span class="icon">&#8592;</span><span class="label">Shop</span></a>
+      <button id="fullscreen-btn" class="primary btn-icon" title="Go full screen"><span class="icon">&#9974;</span><span class="label">Fullscreen</span></button>
+      <button id="auto-btn" title="Auto-launch like the real product" class="btn-icon"><span class="icon">&#9654;</span><span class="label">Auto Launch: Off</span></button>
+      <button id="video-btn" class="active btn-icon" title="Toggle background video"><span class="icon">&#127909;</span><span class="label">Video: On</span></button>
+      <button id="reset-btn" title="Reset the ball" class="btn-icon"><span class="icon">&#128377;</span><span class="label">Reset</span></button>
+      <button id="glow-btn" title="Toggle ball glow" class="btn-icon"><span class="icon">&#128161;</span><span class="label">Glow: Off</span></button>
     </div>
 
     <button class="fs-close" id="fs-close" aria-label="Exit fullscreen" title="Exit fullscreen">&times;</button>
@@ -358,10 +391,14 @@
       const hint = document.getElementById('hint');
       const toastEl = document.getElementById('toast');
       const fullscreenBtn = document.getElementById('fullscreen-btn');
+      const fsLabel = fullscreenBtn.querySelector('.label');
       const autoBtn = document.getElementById('auto-btn');
       const resetBtn = document.getElementById('reset-btn');
       const glowBtn = document.getElementById('glow-btn');
       const videoBtn = document.getElementById('video-btn');
+      const autoLabel = autoBtn.querySelector('.label');
+      const videoLabel = videoBtn.querySelector('.label');
+      const glowLabel = glowBtn.querySelector('.label');
       const bgOverlay = document.getElementById('bg-overlay');
       const bgVids = [document.getElementById('bgvid1'), document.getElementById('bgvid2')];
       const fsClose = document.getElementById('fs-close');
@@ -518,7 +555,7 @@
           const req = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
           if (req) {
             Promise.resolve(req.call(el)).then(function () {
-              fullscreenBtn.innerHTML = '&#10005; Exit Fullscreen';
+              fsLabel.textContent = 'Exit Fullscreen';
             }).catch(function () {
               showToast('Fullscreen not available');
             });
@@ -538,7 +575,7 @@
           demo.classList.add('is-fullscreen');
         } else {
           demo.classList.remove('is-fullscreen');
-          fullscreenBtn.innerHTML = '&#9974; Fullscreen';
+          fsLabel.textContent = 'Fullscreen';
         }
         setTimeout(measure, 100);
       }
@@ -555,13 +592,15 @@
         autoOn = on;
         if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
         if (on) {
-          autoBtn.textContent = 'Auto Launch: On';
+          autoLabel.textContent = 'Auto Launch: On';
+          autoBtn.title = 'Auto-launch is running';
           autoBtn.classList.add('active');
           launchBall();
           autoTimer = setInterval(launchBall, 4000);
           showToast('Auto launch on');
         } else {
-          autoBtn.textContent = 'Auto Launch: Off';
+          autoLabel.textContent = 'Auto Launch: Off';
+          autoBtn.title = 'Auto-launch like the real product';
           autoBtn.classList.remove('active');
         }
       }
@@ -590,12 +629,14 @@
           tryPlayBg();
           bgOverlay.classList.remove('off');
           bgVids[bgIndex].classList.add('show');
-          videoBtn.textContent = 'Video: On';
+          videoLabel.textContent = 'Video: On';
+          videoBtn.title = 'Toggle background video off';
           videoBtn.classList.add('active');
         } else {
           bgVids.forEach(function (v) { v.pause(); v.classList.remove('show'); });
           bgOverlay.classList.add('off');
-          videoBtn.textContent = 'Video: Off';
+          videoLabel.textContent = 'Video: Off';
+          videoBtn.title = 'Toggle background video on';
           videoBtn.classList.remove('active');
         }
       });
@@ -611,11 +652,13 @@
         glowOn = !glowOn;
         if (glowOn) {
           ball.classList.add('glow');
-          glowBtn.textContent = 'Glow: On';
+          glowLabel.textContent = 'Glow: On';
+          glowBtn.title = 'Toggle ball glow off';
           glowBtn.classList.add('active');
         } else {
           ball.classList.remove('glow');
-          glowBtn.textContent = 'Glow: Off';
+          glowLabel.textContent = 'Glow: Off';
+          glowBtn.title = 'Toggle ball glow on';
           glowBtn.classList.remove('active');
         }
       });
