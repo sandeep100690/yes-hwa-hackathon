@@ -98,22 +98,26 @@ function formatTime(s) {
 }
 function launchBall() {
   state = 'throwing';
-  screenStatus.textContent = 'Throwing';
-  screenTimer.textContent = formatTime(remaining);
-  const angle = (Math.random() * 300) + 30;
+  if (screenStatus) screenStatus.textContent = 'Throwing';
+  if (screenTimer) screenTimer.textContent = formatTime(remaining);
+  const angle = Math.random() * Math.PI * 2;
   throwDirection = angle;
-  throwLine.style.transform = `rotate(${angle}deg) scale(1.6)`;
-  throwLine.style.opacity = '1';
-  heroBall.style.transition = 'transform 0.6s ease';
-  heroBall.style.transform = `translate(${Math.cos(angle * Math.PI / 180) * 90}px, ${Math.sin(angle * Math.PI / 180) * -90}px)`;
+  if (throwLine) {
+    throwLine.style.transform = `rotate(${angle}deg) scale(1.6)`;
+    throwLine.style.opacity = '1';
+  }
+  if (heroBall) {
+    heroBall.style.transition = 'transform 0.6s ease';
+    heroBall.style.transform = `translate(${Math.cos(angle * Math.PI / 180) * 90}px, ${Math.sin(angle * Math.PI / 180) * -90}px)`;
+  }
   setTimeout(() => {
     state = 'returning';
-    screenStatus.textContent = 'Returning';
-    heroBall.style.transform = 'translate(0,0)';
-    throwLine.style.opacity = '0';
+    if (screenStatus) screenStatus.textContent = 'Returning';
+    if (heroBall) heroBall.style.transform = 'translate(0,0)';
+    if (throwLine) throwLine.style.opacity = '0';
     setTimeout(() => {
       state = 'delay';
-      screenStatus.textContent = 'Next throw in 10s';
+      if (screenStatus) screenStatus.textContent = 'Next throw in 10s';
       setTimeout(() => {
         if (state === 'delay') launchBall();
       }, 10000);
@@ -123,21 +127,21 @@ function launchBall() {
 function tick() {
   if (remaining > 0) {
     remaining--;
-    screenTimer.textContent = formatTime(remaining);
+    if (screenTimer) screenTimer.textContent = formatTime(remaining);
   }
   if (remaining <= 0) {
     clearInterval(timerInterval);
     timerInterval = null;
-    screenStatus.textContent = 'Play time ended';
-    screenTimer.textContent = '00:00';
+    if (screenStatus) screenStatus.textContent = 'Play time ended';
+    if (screenTimer) screenTimer.textContent = '00:00';
     clearInterval(throwInterval);
     throwInterval = null;
-    heroBall.style.transform = 'translate(0,0)';
-    throwLine.style.opacity = '0';
+    if (heroBall) heroBall.style.transform = 'translate(0,0)';
+    if (throwLine) throwLine.style.opacity = '0';
     state = 'idle';
   }
 }
-timerSet.addEventListener('click', () => {
+if (timerSet) timerSet.addEventListener('click', () => {
   const s = timerStart.value;
   const e = timerEnd.value;
   if (!s || !e) { alert('Please set both start and end times.'); return; }
@@ -147,14 +151,13 @@ timerSet.addEventListener('click', () => {
   clearInterval(timerInterval);
   clearInterval(throwInterval);
   remaining = endMins - startMins;
-  screenStatus.textContent = 'Waiting for start';
-  screenTimer.textContent = formatTime(remaining);
-  // start countdown to launch
+  if (screenStatus) screenStatus.textContent = 'Waiting for start';
+  if (screenTimer) screenTimer.textContent = formatTime(remaining);
   const nowMins = new Date().getHours()*60 + new Date().getMinutes();
   const waitMs = (startMins - nowMins) * 60000;
   if (waitMs <= 0) {
     launchBall();
-    throwInterval = setInterval(launchBall, 20000); // simulate ongoing cycle within window
+    throwInterval = setInterval(launchBall, 20000);
   } else {
     setTimeout(() => { launchBall(); throwInterval = setInterval(launchBall, 20000); }, waitMs);
   }
@@ -163,11 +166,13 @@ timerSet.addEventListener('click', () => {
 
 // Preview ball subtle float
 const previewBall = document.getElementById('preview-ball');
-let dir = 1;
-setInterval(() => {
-  previewBall.style.transform = `translateY(${dir * 6}px)`;
-  dir *= -1;
-}, 900);
+if (previewBall) {
+  let dir = 1;
+  setInterval(() => {
+    previewBall.style.transform = `translateY(${dir * 6}px)`;
+    dir *= -1;
+  }, 900);
+}
 
 // Cart persistence on load
 try { cart = JSON.parse(localStorage.getItem('pupplay_cart') || '[]'); } catch (e) { cart = []; }
