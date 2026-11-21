@@ -10,8 +10,7 @@ const addBtn = document.getElementById('add-to-cart');
 const cartCountEl = document.getElementById('cart-count');
 const cartLink = document.getElementById('cart-link');
 const cartDrawer = document.getElementById('cart');
-const cartOverlay = document.getElementById('cart-overlay');
-const cartPanel = cartDrawer.querySelector('.cart-panel');
+const cartPanel = cartDrawer ? cartDrawer.querySelector('.cart-panel') : null;
 const cartClose = document.getElementById('cart-close');
 const cartItemsEl = document.getElementById('cart-items');
 const cartTotalPriceEl = document.getElementById('cart-total-price');
@@ -67,14 +66,14 @@ function removeItem(idx) {
 function openCart() { cartDrawer.setAttribute('aria-hidden', 'false'); cartOverlay.classList.add('open'); cartPanel.classList.add('open'); }
 function closeCart() { cartDrawer.setAttribute('aria-hidden', 'true'); cartOverlay.classList.remove('open'); cartPanel.classList.remove('open'); }
 
-addBtn.addEventListener('click', addToCart);
-cartLink.addEventListener('click', (e) => { e.preventDefault(); openCart(); });
-cartClose.addEventListener('click', closeCart);
-cartOverlay.addEventListener('click', closeCart);
-cartCheckout.addEventListener('click', () => {
+if (addBtn) addBtn.addEventListener('click', addToCart);
+if (cartLink) cartLink.addEventListener('click', (e) => { e.preventDefault(); openCart(); });
+if (cartClose) cartClose.addEventListener('click', closeCart);
+if (cartOverlay) cartOverlay.addEventListener('click', closeCart);
+if (cartCheckout) cartCheckout.addEventListener('click', () => {
   if (cart.length === 0) return;
-  const selectedPayment = document.querySelector('input[name="payment"]:checked').value;
-  const paymentLabel = document.querySelector('input[name="payment"]:checked').parentElement.textContent.trim();
+  const selectedPayment = document.querySelector('input[name="payment"]:checked');
+  const paymentLabel = selectedPayment ? selectedPayment.parentElement.textContent.trim() : 'Card';
   alert('Thank you for your order! Payment via ' + paymentLabel + '. Your PupPlay launcher will keep your dog happy while you are away.');
   cart = []; saveCart(); renderCart(); closeCart();
 });
@@ -346,22 +345,26 @@ navToggle.addEventListener('click', () => {
 })();
 
 // Payment accordion toggles
-document.querySelectorAll('.accordion-header').forEach(function (btn) {
-  btn.addEventListener('click', function () {
-    const contentId = btn.id.replace('-header', '-content');
-    const content = document.getElementById(contentId);
-    const isOpen = btn.getAttribute('aria-expanded') === 'true';
-    // Close all accordion contents
-    document.querySelectorAll('.accordion-content').forEach(function (c) {
-      c.setAttribute('aria-hidden', 'true');
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.accordion-header').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var contentId = btn.id.replace('-header', '-content');
+      var content = document.getElementById(contentId);
+      var isOpen = content.getAttribute('aria-hidden') === 'false';
+      
+      // Close all accordion contents
+      document.querySelectorAll('.accordion-content').forEach(function (c) {
+        c.setAttribute('aria-hidden', 'true');
+      });
+      document.querySelectorAll('.accordion-header').forEach(function (b) {
+        b.setAttribute('aria-expanded', 'false');
+      });
+      
+      // Open clicked if it was closed
+      if (!isOpen) {
+        content.setAttribute('aria-hidden', 'false');
+        btn.setAttribute('aria-expanded', 'true');
+      }
     });
-    document.querySelectorAll('.accordion-header').forEach(function (b) {
-      b.setAttribute('aria-expanded', 'false');
-    });
-    // Open clicked if it was closed
-    if (!isOpen) {
-      content.setAttribute('aria-hidden', 'false');
-      btn.setAttribute('aria-expanded', 'true');
-    }
   });
 });
