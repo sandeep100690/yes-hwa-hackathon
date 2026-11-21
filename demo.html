@@ -90,14 +90,11 @@
     .controls .btn-icon .icon { font-size: 1.1rem; }
     .controls .btn-icon .label { display: none; }
 
+    .controls .active { background: #10b981; border-color: #10b981; color: #06281c; }
 
-    /* Custom tooltip on hover */
-    .controls .btn-icon[title]:hover::after {
-      content: attr(title);
+    /* Tooltip beside buttons */
+    .btn-tooltip {
       position: fixed;
-      right: 90px;
-      top: 50%;
-      transform: translateY(-50%);
       background: #1e293b;
       color: #fff;
       padding: 6px 10px;
@@ -108,14 +105,10 @@
       z-index: 100;
       border: 1px solid rgba(148,163,184,0.3);
       pointer-events: none;
-      animation: tooltipFade 0.15s ease;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+      display: none;
     }
-    @keyframes tooltipFade {
-      from { opacity: 0; transform: translateY(-50%) translateX(4px); }
-      to { opacity: 1; transform: translateY(-50%) translateX(0); }
-    }
-
-    .controls .active { background: #10b981; border-color: #10b981; color: #06281c; }
 
     /* Fullscreen close button (shown only in fullscreen) */
     .fs-close {
@@ -330,6 +323,9 @@
       <button id="glow-btn" title="Toggle ball glow" class="btn-icon"><span class="icon">&#128161;</span></button>
     </div>
 
+    <!-- Tooltip beside buttons -->
+    <div class="btn-tooltip" id="btn-tooltip"></div>
+
     <button class="fs-close" id="fs-close" aria-label="Exit fullscreen" title="Exit fullscreen">&times;</button>
 
     <div class="hint" id="hint">
@@ -381,6 +377,28 @@
       const bgOverlay = document.getElementById('bg-overlay');
       const bgVids = [document.getElementById('bgvid1'), document.getElementById('bgvid2')];
       const fsClose = document.getElementById('fs-close');
+      const btnTooltip = document.getElementById('btn-tooltip');
+
+      const allBtns = [fullscreenBtn, autoBtn, resetBtn, glowBtn, videoBtn];
+      allBtns.forEach(function (btn) {
+        btn.addEventListener('mouseenter', function (e) {
+          btnTooltip.textContent = btn.title;
+          btnTooltip.style.display = 'block';
+          const rect = btn.getBoundingClientRect();
+          btnTooltip.style.top = (rect.top + rect.height / 2) + 'px';
+          btnTooltip.style.left = (rect.left - btnTooltip.offsetWidth - 12) + 'px';
+          btnTooltip.style.opacity = '1';
+        });
+        btn.addEventListener('mousemove', function (e) {
+          const rect = btn.getBoundingClientRect();
+          btnTooltip.style.top = (rect.top + rect.height / 2) + 'px';
+          btnTooltip.style.left = (rect.left - btnTooltip.offsetWidth - 12) + 'px';
+        });
+        btn.addEventListener('mouseleave', function () {
+          btnTooltip.style.opacity = '0';
+          setTimeout(function () { btnTooltip.style.display = 'none'; }, 150);
+        });
+      });
 
       // --- Demo limit + sliding ticker ---
       const MAX_DEMOS = 5;
