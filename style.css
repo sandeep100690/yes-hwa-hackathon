@@ -44,6 +44,7 @@ ul { list-style: none; }
 .hero-text h1 { font-size: 3rem; line-height: 1.1; letter-spacing: -1px; margin-bottom: 16px; }
 .hero-text p { font-size: 1.1rem; color: var(--muted); margin-bottom: 24px; max-width: 480px; }
 .btn { display: inline-flex; align-items: center; justify-content: center; padding: 12px 24px; border-radius: 10px; font-weight: 700; font-size: 1rem; transition: transform 0.1s, opacity 0.2s; }
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 .btn:active { transform: scale(0.97); }
 .btn-primary { background: var(--primary); color: #fff; }
 .btn-primary:hover { background: var(--primary-dark); opacity: 1; }
@@ -139,6 +140,7 @@ ul { list-style: none; }
   .nav-toggle { display: block; }
   .hero-inner { grid-template-columns: 1fr; gap: 30px; }
   .hero-text { text-align: center; }
+  .hero-actions { justify-content: center; }
   .hero-text h1 { font-size: 2.2rem; }
   .hero-text p { margin: 0 auto 24px; }
   .device-screen { min-height: 180px; }
