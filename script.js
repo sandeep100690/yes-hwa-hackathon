@@ -63,8 +63,8 @@ function removeItem(idx) {
   saveCart();
   renderCart();
 }
-function openCart() { cartDrawer.setAttribute('aria-hidden', 'false'); cartOverlay.classList.add('open'); cartPanel.classList.add('open'); }
-function closeCart() { cartDrawer.setAttribute('aria-hidden', 'true'); cartOverlay.classList.remove('open'); cartPanel.classList.remove('open'); }
+function openCart() { if (cartDrawer) cartDrawer.setAttribute('aria-hidden', 'false'); if (cartOverlay) cartOverlay.classList.add('open'); if (cartPanel) cartPanel.classList.add('open'); }
+function closeCart() { if (cartDrawer) cartDrawer.setAttribute('aria-hidden', 'true'); if (cartOverlay) cartOverlay.classList.remove('open'); if (cartPanel) cartPanel.classList.remove('open'); }
 
 if (addBtn) addBtn.addEventListener('click', addToCart);
 if (cartLink) cartLink.addEventListener('click', (e) => { e.preventDefault(); openCart(); });
