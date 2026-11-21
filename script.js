@@ -12,7 +12,6 @@ const qtyDec = document.getElementById('qty-dec');
 const qtyInc = document.getElementById('qty-inc');
 const totalPriceEl = document.getElementById('total-price');
 const addBtn = document.getElementById('add-to-cart');
-const buyNowBtn = document.getElementById('buy-now');
 const cartCountEl = document.getElementById('cart-count');
 const cartLink = document.getElementById('cart-link');
 const cartDrawer = document.getElementById('cart');
@@ -89,7 +88,6 @@ function openCart() { cartDrawer.setAttribute('aria-hidden', 'false'); cartOverl
 function closeCart() { cartDrawer.setAttribute('aria-hidden', 'true'); cartOverlay.classList.remove('open'); cartPanel.classList.remove('open'); }
 
 addBtn.addEventListener('click', addToCart);
-buyNowBtn.addEventListener('click', () => { addToCart(); setTimeout(() => { cartCheckout.click(); }, 150); });
 cartLink.addEventListener('click', (e) => { e.preventDefault(); openCart(); });
 cartClose.addEventListener('click', closeCart);
 cartOverlay.addEventListener('click', closeCart);
