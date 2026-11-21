@@ -28,9 +28,9 @@ ul { list-style: none; }
 /* Header */
 .header { background: var(--card); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; }
 .nav { display: flex; align-items: center; justify-content: space-between; height: 80px; gap: 16px; }
-.logo { display: flex; align-items: center; gap: 12px; font-size: 1.75rem; font-weight: 900; color: var(--primary); letter-spacing: -0.5px; }
-.logo-mark { width: 44px; height: 44px; flex-shrink: 0; border-radius: 12px; background: #eff6ff; border: 2px solid var(--primary); display: flex; align-items: center; justify-content: center; }
-.logo-mark svg { width: 26px; height: 26px; display: block; }
+.logo { display: flex; align-items: center; gap: 14px; font-size: 2rem; font-weight: 900; color: var(--primary); letter-spacing: -0.5px; }
+.logo-mark { width: 56px; height: 56px; flex-shrink: 0; border-radius: 14px; background: #eff6ff; border: 2px solid var(--primary); display: flex; align-items: center; justify-content: center; }
+.logo-mark svg { width: 32px; height: 32px; display: block; }
 .logo span { color: var(--accent); }
 .nav-links { display: flex; gap: 26px; align-items: center; }
 .nav-links a { font-size: 0.95rem; font-weight: 600; color: var(--muted); transition: color 0.2s; }
@@ -93,7 +93,6 @@ ul { list-style: none; }
 .product-desc { color: var(--muted); margin-bottom: 20px; font-size: 1rem; line-height: 1.6; }
 .features { margin-bottom: 26px; }
 .features li { font-size: 0.98rem; color: var(--text); margin-bottom: 8px; padding-left: 26px; position: relative; }
-.features li::before { content: "✓"; position: absolute; left: 0; color: var(--accent); font-weight: 800; }
 .buy-controls { display: flex; flex-direction: column; gap: 14px; }
 .price-qty { display: flex; gap: 22px; align-items: center; flex-wrap: wrap; }
 .price-block { display: flex; flex-direction: column; gap: 4px; }

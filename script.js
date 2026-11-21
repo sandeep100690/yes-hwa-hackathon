@@ -1,4 +1,4 @@
-const PRICE = 89.00;
+const PRICE = 50.00;
 const PRODUCT = { id: 'pupplay-1', name: 'PupPlay Auto Ball Launcher', price: PRICE };
 
 let cart = [];
