@@ -100,6 +100,31 @@
     .controls .primary:hover { background: #1d4ed8; }
     .controls .active { background: #10b981; border-color: #10b981; color: #06281c; }
 
+    /* Fullscreen close button (shown only in fullscreen) */
+    .fs-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      z-index: 50;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: rgba(15,23,42,0.72);
+      border: 1px solid rgba(148,163,184,0.3);
+      color: #fff;
+      font-size: 1.8rem;
+      line-height: 1;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: background 0.15s, transform 0.1s;
+    }
+    .fs-close:hover { background: rgba(239,68,68,0.85); }
+    .fs-close:active { transform: scale(0.94); }
+    .demo.is-fullscreen .controls { display: none; }
+    .demo.is-fullscreen .hint { display: none; }
+    .demo.is-fullscreen .fs-close { display: flex; }
+
     /* Title / hint */
     .hint {
       position: absolute;
@@ -155,7 +180,7 @@
     .ball {
       position: absolute;
       top: 0; left: 0;
-      width: 84px; height: 84px;
+      width: 120px; height: 120px;
       border-radius: 50%;
       cursor: grab;
       touch-action: none;
@@ -190,7 +215,7 @@
       .controls a, .controls button { font-size: 0.78rem; padding: 8px 10px; }
       .hint { top: 96px; }
       .hint .big { font-size: 1.1rem; }
-      .ball { width: 68px; height: 68px; }
+      .ball { width: 100px; height: 100px; }
       .launcher { width: 120px; height: 120px; }
     }
   </style>
@@ -212,6 +237,8 @@
       <button id="video-btn" class="active" title="Toggle background video">Video: On</button>
       <button id="reset-btn" title="Reset the ball">Reset</button>
     </div>
+
+    <button class="fs-close" id="fs-close" aria-label="Exit fullscreen" title="Exit fullscreen">&times;</button>
 
     <div class="hint" id="hint">
       <span class="big">Drag the ball &mdash; fling it around!</span>
@@ -253,8 +280,9 @@
       const videoBtn = document.getElementById('video-btn');
       const bgOverlay = document.getElementById('bg-overlay');
       const bgVids = [document.getElementById('bgvid1'), document.getElementById('bgvid2')];
+      const fsClose = document.getElementById('fs-close');
 
-      let W = 0, H = 0, SIZE = 84;
+      let W = 0, H = 0, SIZE = 120;
       let x = 0, y = 0, vx = 0, vy = 0;
       let dragging = false, pointerId = null, offsetX = 0, offsetY = 0;
       let lastX = 0, lastY = 0, lastT = 0;
@@ -383,13 +411,25 @@
           if (exit) exit.call(document);
         }
       }
-      document.addEventListener('fullscreenchange', function () {
-        if (!document.fullscreenElement) {
+      function isFs() {
+        return document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+      }
+      function syncFullscreenUI() {
+        if (isFs()) {
+          demo.classList.add('is-fullscreen');
+        } else {
+          demo.classList.remove('is-fullscreen');
           fullscreenBtn.innerHTML = '&#9974; Fullscreen';
         }
         setTimeout(measure, 100);
-      });
+      }
+      document.addEventListener('fullscreenchange', syncFullscreenUI);
+      document.addEventListener('webkitfullscreenchange', syncFullscreenUI);
       fullscreenBtn.addEventListener('click', toggleFullscreen);
+      fsClose.addEventListener('click', function () {
+        const exit = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+        if (exit) exit.call(document);
+      });
 
       // --- Auto launch ---
       function setAuto(on) {
