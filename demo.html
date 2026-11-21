@@ -30,7 +30,34 @@
       height: 38%;
       background: linear-gradient(180deg, transparent, rgba(16,185,129,0.10));
       pointer-events: none;
+      z-index: 2;
     }
+
+    /* Background videos (dogs & cats playing) */
+    .bg-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 1.6s ease;
+      pointer-events: none;
+      filter: saturate(1.05) brightness(0.92);
+    }
+    .bg-video.show { opacity: 1; }
+    .bg-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 50% 120%, rgba(15,23,42,0.45), rgba(15,23,42,0.82) 72%),
+        linear-gradient(180deg, rgba(15,23,42,0.55), rgba(15,23,42,0.25) 40%, rgba(15,23,42,0.7));
+      transition: opacity 0.4s ease;
+    }
+    .bg-overlay.off { opacity: 0; }
 
     /* Top controls */
     .controls {
@@ -170,10 +197,19 @@
 </head>
 <body>
   <div class="demo" id="demo">
+    <video class="bg-video show" id="bgvid1" autoplay muted loop playsinline preload="auto" disablepictureinpicture aria-hidden="true">
+      <source src="/assets/dog-playing.mp4" type="video/mp4">
+    </video>
+    <video class="bg-video" id="bgvid2" autoplay muted loop playsinline preload="auto" disablepictureinpicture aria-hidden="true">
+      <source src="/assets/cat-playing.mp4" type="video/mp4">
+    </video>
+    <div class="bg-overlay" id="bg-overlay"></div>
+
     <div class="controls">
       <a href="/" title="Back to shop">&larr; Shop</a>
       <button id="fullscreen-btn" class="primary" title="Go full screen">&#9974; Fullscreen</button>
       <button id="auto-btn" title="Auto-launch like the real product">Auto Launch: Off</button>
+      <button id="video-btn" class="active" title="Toggle background video">Video: On</button>
       <button id="reset-btn" title="Reset the ball">Reset</button>
     </div>
 
@@ -214,6 +250,9 @@
       const fullscreenBtn = document.getElementById('fullscreen-btn');
       const autoBtn = document.getElementById('auto-btn');
       const resetBtn = document.getElementById('reset-btn');
+      const videoBtn = document.getElementById('video-btn');
+      const bgOverlay = document.getElementById('bg-overlay');
+      const bgVids = [document.getElementById('bgvid1'), document.getElementById('bgvid2')];
 
       let W = 0, H = 0, SIZE = 84;
       let x = 0, y = 0, vx = 0, vy = 0;
@@ -368,6 +407,39 @@
         }
       }
       autoBtn.addEventListener('click', function () { setAuto(!autoOn); });
+
+      // --- Background videos (dogs & cats playing) ---
+      let bgIndex = 0;
+      let videoOn = true;
+      bgVids.forEach(function (v) { v.muted = true; });
+      function tryPlayBg() {
+        bgVids.forEach(function (v) {
+          var p = v.play();
+          if (p && p.catch) p.catch(function () {});
+        });
+      }
+      tryPlayBg();
+      setInterval(function () {
+        if (!videoOn) return;
+        bgVids[bgIndex].classList.remove('show');
+        bgIndex = (bgIndex + 1) % bgVids.length;
+        bgVids[bgIndex].classList.add('show');
+      }, 9000);
+      videoBtn.addEventListener('click', function () {
+        videoOn = !videoOn;
+        if (videoOn) {
+          tryPlayBg();
+          bgOverlay.classList.remove('off');
+          bgVids[bgIndex].classList.add('show');
+          videoBtn.textContent = 'Video: On';
+          videoBtn.classList.add('active');
+        } else {
+          bgVids.forEach(function (v) { v.pause(); v.classList.remove('show'); });
+          bgOverlay.classList.add('off');
+          videoBtn.textContent = 'Video: Off';
+          videoBtn.classList.remove('active');
+        }
+      });
 
       // --- Reset ---
       resetBtn.addEventListener('click', function () {
