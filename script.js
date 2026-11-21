@@ -10,6 +10,7 @@ const addBtn = document.getElementById('add-to-cart');
 const cartCountEl = document.getElementById('cart-count');
 const cartLink = document.getElementById('cart-link');
 const cartDrawer = document.getElementById('cart');
+const cartOverlay = document.getElementById('cart-overlay');
 const cartPanel = cartDrawer ? cartDrawer.querySelector('.cart-panel') : null;
 const cartClose = document.getElementById('cart-close');
 const cartItemsEl = document.getElementById('cart-items');
