@@ -131,8 +131,8 @@ ul { list-style: none; }
 .feature-tag { display: inline-block; margin-top: 12px; font-size: 0.72rem; font-weight: 700; color: var(--primary); background: #eff6ff; padding: 4px 10px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.4px; }
 
 /* How it works */
-.how-it-works { padding: 70px 0; background: var(--card); scroll-margin-top: 110px; }
-.how-it-works h2 { text-align: center; font-size: 2rem; margin-bottom: 8px; letter-spacing: -0.5px; }
+.how-it-works { padding: 35px 0; background: var(--card); scroll-margin-top: 110px; }
+.how-it-works h2 { text-align: center; font-size: 2rem; margin-bottom: 28px; letter-spacing: -0.5px; }
 .how-it-works p { text-align: center; color: var(--muted); margin-bottom: 44px; font-size: 1.05rem; }
 .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
 .step { text-align: center; padding: 24px 16px; border-radius: var(--radius); border: 1px solid var(--line); background: var(--bg); }
