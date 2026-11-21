@@ -208,7 +208,7 @@ navToggle.addEventListener('click', () => {
   navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
   navLinks.style.flexDirection = 'column';
   navLinks.style.position = 'absolute';
-  navLinks.style.top = '72px';
+  navLinks.style.top = '80px';
   navLinks.style.right = '0';
   navLinks.style.background = '#fff';
   navLinks.style.border = '1px solid var(--line)';
