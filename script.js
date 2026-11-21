@@ -19,8 +19,8 @@ const cartCheckout = document.getElementById('cart-checkout');
 // Cart
 function saveCart() { try { localStorage.setItem('pupplay_cart', JSON.stringify(cart)); } catch (e) {} }
 function renderCart() {
-  cartCountEl.textContent = cart.reduce((s, i) => s + i.qty, 0);
-  cartItemsEl.innerHTML = '';
+  if (cartCountEl) cartCountEl.textContent = cart.reduce((s, i) => s + i.qty, 0);
+  if (cartItemsEl) cartItemsEl.innerHTML = '';
   let total = 0;
   if (cart.length === 0) {
     cartItemsEl.innerHTML = '<div class="cart-empty">Your cart is empty.</div>';
@@ -40,7 +40,7 @@ function renderCart() {
       cartItemsEl.appendChild(el);
     });
   }
-  cartTotalPriceEl.textContent = '$' + total.toFixed(2);
+  if (cartTotalPriceEl) cartTotalPriceEl.textContent = '$' + total.toFixed(2);
   cartItemsEl.querySelectorAll('.item-remove').forEach(btn => {
     btn.addEventListener('click', (e) => {
       const idx = parseInt(btn.getAttribute('data-idx'), 10);
