@@ -251,24 +251,58 @@
           <span>Total:</span>
           <span class="cart-total-price" id="cart-total-price">$0.00</span>
         </div>
-        <div class="payment-methods">
+        <div class="payment-accordion">
           <h4>Payment Method</h4>
-          <div class="payment-options">
-            <label class="payment-option">
-              <input type="radio" name="payment" value="upi" checked>
-              <span class="payment-icon">📱</span>
+          <div class="accordion-item">
+            <button class="accordion-header" id="upi-header" aria-expanded="true">
+              <span class="accordion-icon">📱</span>
               <span>UPI</span>
-            </label>
-            <label class="payment-option">
-              <input type="radio" name="payment" value="debit">
-              <span class="payment-icon">💳</span>
-              <span>Debit Card</span>
-            </label>
-            <label class="payment-option">
-              <input type="radio" name="payment" value="credit">
-              <span class="payment-icon">💳</span>
-              <span>Credit Card</span>
-            </label>
+              <span class="accordion-arrow">▾</span>
+            </button>
+            <div class="accordion-content" id="upi-content" aria-hidden="false">
+              <label class="field-label">UPI ID</label>
+              <input type="text" class="field-input" placeholder="e.g. name@upi" />
+              <div class="field-hint">Enter your UPI ID to pay</div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-header" id="card-header" aria-expanded="false">
+              <span class="accordion-icon">💳</span>
+              <span>Credit / Debit / ATM Card</span>
+              <span class="accordion-arrow">▾</span>
+            </button>
+            <div class="accordion-content" id="card-content" aria-hidden="true">
+              <label class="field-label">Card Number</label>
+              <input type="text" class="field-input" placeholder="1234 5678 9012 3456" />
+              <div class="card-row">
+                <div class="field-group">
+                  <label class="field-label">Expiry</label>
+                  <input type="text" class="field-input" placeholder="MM/YY" />
+                </div>
+                <div class="field-group">
+                  <label class="field-label">CVV</label>
+                  <input type="text" class="field-input" placeholder="123" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-header" id="netbank-header" aria-expanded="false">
+              <span class="accordion-icon">🏦</span>
+              <span>Net Banking</span>
+              <span class="accordion-arrow">▾</span>
+            </button>
+            <div class="accordion-content" id="netbank-content" aria-hidden="true">
+              <label class="field-label">Select Bank</label>
+              <select class="field-input">
+                <option>Select your bank</option>
+                <option>State Bank of India</option>
+                <option>HDFC Bank</option>
+                <option>ICICI Bank</option>
+                <option>Axis Bank</option>
+                <option>Kotak Mahindra Bank</option>
+              </select>
+            </div>
           </div>
         </div>
         <button class="btn btn-primary cart-checkout" id="cart-checkout">Checkout</button>

@@ -344,3 +344,24 @@ navToggle.addEventListener('click', () => {
   requestAnimationFrame(tick);
   window.addEventListener('resize', function () { setTimeout(measure, 50); });
 })();
+
+// Payment accordion toggles
+document.querySelectorAll('.accordion-header').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    const contentId = btn.id.replace('-header', '-content');
+    const content = document.getElementById(contentId);
+    const isOpen = btn.getAttribute('aria-expanded') === 'true';
+    // Close all accordion contents
+    document.querySelectorAll('.accordion-content').forEach(function (c) {
+      c.setAttribute('aria-hidden', 'true');
+    });
+    document.querySelectorAll('.accordion-header').forEach(function (b) {
+      b.setAttribute('aria-expanded', 'false');
+    });
+    // Open clicked if it was closed
+    if (!isOpen) {
+      content.setAttribute('aria-hidden', 'false');
+      btn.setAttribute('aria-expanded', 'true');
+    }
+  });
+});
