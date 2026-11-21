@@ -46,14 +46,14 @@ ul { list-style: none; }
 .hero-text h1 { font-size: 3rem; line-height: 1.1; letter-spacing: -1px; margin-bottom: 16px; }
 .hero-text p { font-size: 1.1rem; color: var(--muted); margin-bottom: 24px; max-width: 600px; margin-left: auto; margin-right: auto; }
 .hero-actions { justify-content: center; gap: 20px; }
-.btn { display: inline-flex; align-items: center; justify-content: center; padding: 14px 28px; border-radius: 12px; font-weight: 700; font-size: 1rem; transition: transform 0.1s, opacity 0.2s; min-width: 210px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; padding: 16px 36px; border-radius: 12px; font-weight: 700; font-size: 1.05rem; transition: transform 0.1s, opacity 0.2s; min-width: 240px; height: 56px; }
 .btn:active { transform: scale(0.97); }
 .btn-primary { background: var(--primary); color: #fff; }
 .btn-primary:hover { background: var(--primary-dark); opacity: 1; }
-.btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); min-width: 210px; }
+.btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); min-width: 240px; height: 56px; }
 .btn-outline:hover { background: var(--primary); color: #fff; }
 .btn-small { padding: 9px 16px; font-size: 0.85rem; border-radius: 10px; }
-.btn-large { padding: 16px 36px; font-size: 1.05rem; min-width: 210px; }
+.btn-large { padding: 16px 36px; font-size: 1.05rem; min-width: 240px; height: 56px; }
 
 /* Device visual */
 .device-card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; display: flex; flex-direction: column; gap: 18px; }
