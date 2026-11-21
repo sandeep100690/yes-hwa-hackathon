@@ -381,12 +381,12 @@
       try { demoCount = parseInt(localStorage.getItem(DEMO_KEY) || '0', 10); } catch (e) {}
 
       function openPopup(el) {
+        el.style.display = 'flex';
         el.removeAttribute('aria-hidden');
-        backdrop.style.display = 'flex';
       }
       function closePopup(el) {
+        el.style.display = 'none';
         el.setAttribute('aria-hidden', 'true');
-        backdrop.style.display = 'none';
       }
 
       if (demoCount >= MAX_DEMOS) {
