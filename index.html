@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PupPlay | Auto Ball Launcher for Dogs</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container nav">
+      <div class="logo">Pup<span>Play</span></div>
+      <nav class="nav-links">
+        <a href="#product">Product</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#cart" class="cart-link" id="cart-link">
+          Cart <span class="cart-count" id="cart-count">0</span>
+        </a>
+      </nav>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">&#9776;</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="hero-text">
+        <span class="badge">Keep Your Dog Happy &amp; Busy</span>
+        <h1>The ball launcher that plays while you're away.</h1>
+        <p>Set a start and end time. The ball launches automatically, retrieves into the box, and relaunches in a new direction after a 10-second delay &mdash; all day, every day.</p>
+        <a href="#product" class="btn btn-primary">Shop Now</a>
+      </div>
+      <div class="hero-visual">
+        <div class="device-card">
+          <div class="device-screen">
+            <div class="screen-status">Idle</div>
+            <div class="screen-timer" id="screen-timer">--:--</div>
+            <div class="ball-box">
+              <div class="ball" id="hero-ball"></div>
+              <div class="throw-line" id="throw-line"></div>
+            </div>
+          </div>
+          <div class="device-controls">
+            <label>Start</label>
+            <input type="time" id="timer-start">
+            <label>End</label>
+            <input type="time" id="timer-end">
+            <button id="timer-set" class="btn btn-small">Set Timer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="product" class="product-section">
+    <div class="container">
+      <div class="section-head">
+        <h2>PupPlay Auto Launcher</h2>
+        <p class="section-sub">Price: <span class="price">$89.00</span></p>
+      </div>
+      <div class="product-grid">
+        <div class="product-img">
+          <div class="launcher-preview">
+            <div class="preview-box">
+              <div class="preview-ball" id="preview-ball"></div>
+            </div>
+            <div class="preview-label">Ball returns to box</div>
+          </div>
+        </div>
+        <div class="product-buy">
+          <h3>PupPlay Auto Ball Launcher</h3>
+          <p class="product-desc">Automatic dog ball launcher with programmable timer. Set start &amp; end times &mdash; the ball launches on schedule, returns to the box, and relaunches in a new direction after a 10-second delay. Keeps dogs happy and busy while you're away.</p>
+          <ul class="features">
+            <li>&#10003; Programmable start &amp; end time</li>
+            <li>&#10003; Auto-relaunch in random direction</li>
+            <li>&#10003; 10-second delay between throws</li>
+            <li>&#10003; Quiet motor, chew-resistant ball</li>
+            <li>&#10003; USB-rechargeable</li>
+          </ul>
+          <div class="buy-controls">
+            <div class="price-qty">
+              <div class="price-block">
+                <span class="price">$89.00</span>
+                <span class="unit">/ unit</span>
+              </div>
+              <div class="qty-selector">
+                <label>Qty</label>
+                <div class="qty-step">
+                  <button class="qty-btn" id="qty-dec">&#8722;</button>
+                  <input type="number" id="qty" value="1" min="1" max="99" readonly>
+                  <button class="qty-btn" id="qty-inc">&#43;</button>
+                </div>
+              </div>
+            </div>
+            <div class="total-block">
+              <span>Total:</span>
+              <span class="total-price" id="total-price">$89.00</span>
+            </div>
+            <button class="btn btn-primary btn-add" id="add-to-cart">Add to Cart</button>
+            <button class="btn btn-outline btn-buy" id="buy-now">Buy Now</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how-it-works" class="how-it-works">
+    <div class="container">
+      <h2>How It Works</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h4>Set the timer</h4>
+          <p>Choose a start and end time for play while you're away.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h4>Ball launches</h4>
+          <p>At start time, the ball is thrown automatically.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h4>Return &amp; relaunch</h4>
+          <p>Once the ball is back in the box, it throws again in a new direction after 10 seconds.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <aside id="cart" class="cart-drawer" aria-hidden="true">
+    <div class="cart-overlay" id="cart-overlay"></div>
+    <div class="cart-panel">
+      <div class="cart-header">
+        <h3>Your Cart</h3>
+        <button class="btn-close" id="cart-close" aria-label="Close cart">&times;</button>
+      </div>
+      <div class="cart-items" id="cart-items">
+        <div class="cart-empty">Your cart is empty.</div>
+      </div>
+      <div class="cart-footer">
+        <div class="cart-total">
+          <span>Total:</span>
+          <span class="cart-total-price" id="cart-total-price">$0.00</span>
+        </div>
+        <button class="btn btn-primary cart-checkout" id="cart-checkout">Checkout</button>
+      </div>
+    </div>
+  </aside>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="logo">Pup<span>Play</span></div>
+      <p>&copy; 2026 PupPlay. Keep your dog happy while you're away.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

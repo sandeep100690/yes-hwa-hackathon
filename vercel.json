@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "style.css", "use": "@vercel/static" },
+    { "src": "script.js", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/style.css", "headers": { "cache-control": "s-maxage=31536000, immutable" } },
+    { "src": "/script.js", "headers": { "cache-control": "s-maxage=31536000, immutable" } },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
+}
