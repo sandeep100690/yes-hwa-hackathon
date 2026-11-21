@@ -61,61 +61,43 @@
     }
     .bg-overlay.off { opacity: 0; }
 
-    /* Right-side vertical controls (below sliding ticker) */
+    /* Right-side vertical controls (vertically centered) */
     .controls {
       position: fixed;
-      top: 48px; right: 16px;
+      top: 50%; left: auto; right: 16px;
+      transform: translateY(-50%);
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      align-items: flex-start;
+      gap: 10px;
+      align-items: center;
       background: rgba(15,23,42,0.72);
       border: 1px solid rgba(148,163,184,0.25);
       backdrop-filter: blur(10px);
-      padding: 10px;
+      padding: 12px;
       border-radius: 14px;
       z-index: 40;
-      max-width: 200px;
+      max-width: 64px;
     }
-    .controls a, .controls button {
-      font: inherit;
-      font-size: 0.85rem;
-      font-weight: 700;
-      padding: 10px 14px;
-      border-radius: 10px;
-      border: 1px solid rgba(148,163,184,0.25);
-      background: rgba(255,255,255,0.06);
-      color: #e2e8f0;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: background 0.15s, transform 0.1s;
-      white-space: nowrap;
-      width: 100%;
-      justify-content: center;
-    }
-    .controls a:hover, .controls button:hover { background: rgba(255,255,255,0.14); }
-    .controls button:active, .controls a:active { transform: scale(0.96); }
-    .controls .primary { background: #2563eb; border-color: #2563eb; color: #fff; }
-    .controls .primary:hover { background: #1d4ed8; }
     .controls .btn-icon {
       display: flex;
       align-items: center;
-      gap: 8px;
       justify-content: center;
+      width: 40px; height: 40px;
+      padding: 0;
+      border-radius: 10px;
+      gap: 0;
     }
-    .controls .btn-icon .icon { font-size: 1rem; }
-    .controls .btn-icon .label { font-size: 0.8rem; }
+    .controls .btn-icon .icon { font-size: 1.1rem; }
+    .controls .btn-icon .label { display: none; }
+
 
     /* Custom tooltip on hover */
     .controls .btn-icon[title]:hover::after {
       content: attr(title);
       position: fixed;
-      left: 50%;
-      top: 60px;
-      transform: translateX(-50%);
+      right: 90px;
+      top: 50%;
+      transform: translateY(-50%);
       background: #1e293b;
       color: #fff;
       padding: 6px 10px;
@@ -312,8 +294,9 @@
       0% { transform: translateX(0); }
       100% { transform: translateX(-100%); }
     }
-      .controls { gap: 6px; padding: 6px; }
-      .controls a, .controls button { font-size: 0.78rem; padding: 8px 10px; }
+      .controls { gap: 6px; padding: 6px; right: 8px; top: 50%; transform: translateY(-50%); }
+      .controls .btn-icon { width: 36px; height: 36px; }
+      .controls .btn-icon .icon { font-size: 1rem; }
       .hint { top: 96px; }
       .hint .big { font-size: 1.1rem; }
       .ball { width: 100px; height: 100px; }
@@ -339,12 +322,12 @@
     </div>
 
     <div class="controls">
-      <a href="/" title="Back to shop" class="btn-icon"><span class="icon">&#8592;</span><span class="label">Shop</span></a>
-      <button id="fullscreen-btn" class="primary btn-icon" title="Go full screen"><span class="icon">&#9974;</span><span class="label">Fullscreen</span></button>
-      <button id="auto-btn" title="Auto-launch like the real product" class="btn-icon"><span class="icon">&#9654;</span><span class="label">Auto Launch: Off</span></button>
-      <button id="video-btn" class="active btn-icon" title="Toggle background video"><span class="icon">&#127909;</span><span class="label">Video: On</span></button>
-      <button id="reset-btn" title="Reset the ball" class="btn-icon"><span class="icon">&#128377;</span><span class="label">Reset</span></button>
-      <button id="glow-btn" title="Toggle ball glow" class="btn-icon"><span class="icon">&#128161;</span><span class="label">Glow: Off</span></button>
+      <a href="/" title="Back to shop" class="btn-icon"><span class="icon">&#8592;</span></a>
+      <button id="fullscreen-btn" class="primary btn-icon" title="Go full screen"><span class="icon">&#9974;</span></button>
+      <button id="auto-btn" title="Auto-launch like the real product" class="btn-icon"><span class="icon">&#9654;</span></button>
+      <button id="video-btn" class="active btn-icon" title="Toggle background video"><span class="icon">&#127909;</span></button>
+      <button id="reset-btn" title="Reset the ball" class="btn-icon"><span class="icon">&#128377;</span></button>
+      <button id="glow-btn" title="Toggle ball glow" class="btn-icon"><span class="icon">&#128161;</span></button>
     </div>
 
     <button class="fs-close" id="fs-close" aria-label="Exit fullscreen" title="Exit fullscreen">&times;</button>
@@ -391,14 +374,10 @@
       const hint = document.getElementById('hint');
       const toastEl = document.getElementById('toast');
       const fullscreenBtn = document.getElementById('fullscreen-btn');
-      const fsLabel = fullscreenBtn.querySelector('.label');
       const autoBtn = document.getElementById('auto-btn');
       const resetBtn = document.getElementById('reset-btn');
       const glowBtn = document.getElementById('glow-btn');
       const videoBtn = document.getElementById('video-btn');
-      const autoLabel = autoBtn.querySelector('.label');
-      const videoLabel = videoBtn.querySelector('.label');
-      const glowLabel = glowBtn.querySelector('.label');
       const bgOverlay = document.getElementById('bg-overlay');
       const bgVids = [document.getElementById('bgvid1'), document.getElementById('bgvid2')];
       const fsClose = document.getElementById('fs-close');
@@ -555,10 +534,8 @@
           const req = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
           if (req) {
             Promise.resolve(req.call(el)).then(function () {
-              fsLabel.textContent = 'Exit Fullscreen';
             }).catch(function () {
               showToast('Fullscreen not available');
-            });
           } else {
             showToast('Fullscreen not supported here');
           }
@@ -575,7 +552,6 @@
           demo.classList.add('is-fullscreen');
         } else {
           demo.classList.remove('is-fullscreen');
-          fsLabel.textContent = 'Fullscreen';
         }
         setTimeout(measure, 100);
       }
@@ -592,14 +568,12 @@
         autoOn = on;
         if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
         if (on) {
-          autoLabel.textContent = 'Auto Launch: On';
           autoBtn.title = 'Auto-launch is running';
           autoBtn.classList.add('active');
           launchBall();
           autoTimer = setInterval(launchBall, 4000);
           showToast('Auto launch on');
         } else {
-          autoLabel.textContent = 'Auto Launch: Off';
           autoBtn.title = 'Auto-launch like the real product';
           autoBtn.classList.remove('active');
         }
@@ -629,13 +603,11 @@
           tryPlayBg();
           bgOverlay.classList.remove('off');
           bgVids[bgIndex].classList.add('show');
-          videoLabel.textContent = 'Video: On';
           videoBtn.title = 'Toggle background video off';
           videoBtn.classList.add('active');
         } else {
           bgVids.forEach(function (v) { v.pause(); v.classList.remove('show'); });
           bgOverlay.classList.add('off');
-          videoLabel.textContent = 'Video: Off';
           videoBtn.title = 'Toggle background video on';
           videoBtn.classList.remove('active');
         }
@@ -652,12 +624,10 @@
         glowOn = !glowOn;
         if (glowOn) {
           ball.classList.add('glow');
-          glowLabel.textContent = 'Glow: On';
           glowBtn.title = 'Toggle ball glow off';
           glowBtn.classList.add('active');
         } else {
           ball.classList.remove('glow');
-          glowLabel.textContent = 'Glow: Off';
           glowBtn.title = 'Toggle ball glow on';
           glowBtn.classList.remove('active');
         }
