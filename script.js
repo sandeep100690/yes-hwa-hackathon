@@ -73,7 +73,9 @@ cartClose.addEventListener('click', closeCart);
 cartOverlay.addEventListener('click', closeCart);
 cartCheckout.addEventListener('click', () => {
   if (cart.length === 0) return;
-  alert('Thank you for your order! Your PupPlay launcher will keep your dog happy while you are away.');
+  const selectedPayment = document.querySelector('input[name="payment"]:checked').value;
+  const paymentLabel = document.querySelector('input[name="payment"]:checked').parentElement.textContent.trim();
+  alert('Thank you for your order! Payment via ' + paymentLabel + '. Your PupPlay launcher will keep your dog happy while you are away.');
   cart = []; saveCart(); renderCart(); closeCart();
 });
 

@@ -188,6 +188,15 @@ ul { list-style: none; }
 .cart-total .cart-total-price { color: var(--primary); }
 .cart-checkout { width: 100%; padding: 14px; font-size: 1rem; }
 
+/* Payment methods */
+.payment-methods { padding: 10px 0; }
+.payment-methods h4 { font-size: 0.9rem; color: var(--muted); margin-bottom: 10px; font-weight: 700; }
+.payment-options { display: flex; gap: 12px; flex-wrap: wrap; }
+.payment-option { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: var(--text); cursor: pointer; }
+.payment-option input { accent-color: var(--primary); }
+.payment-icon { font-size: 1.2rem; }
+.payment-option span:last-child { font-weight: 500; }
+
 /* Footer */
 .footer { padding: 40px 0; text-align: center; color: var(--muted); font-size: 0.9rem; border-top: 1px solid var(--line); background: var(--card); }
 
