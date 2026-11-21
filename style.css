@@ -27,10 +27,10 @@ ul { list-style: none; }
 
 /* Header */
 .header { background: var(--card); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; }
-.nav { display: flex; align-items: center; justify-content: space-between; height: 80px; gap: 16px; }
-.logo { display: flex; align-items: center; gap: 14px; font-size: 2rem; font-weight: 900; color: var(--primary); letter-spacing: -0.5px; }
-.logo-mark { width: 56px; height: 56px; flex-shrink: 0; border-radius: 14px; background: #eff6ff; border: 2px solid var(--primary); display: flex; align-items: center; justify-content: center; }
-.logo-mark svg { width: 32px; height: 32px; display: block; }
+.nav { display: flex; align-items: center; justify-content: space-between; height: 96px; gap: 16px; }
+.logo { display: flex; align-items: center; gap: 16px; font-size: 2.5rem; font-weight: 900; color: var(--primary); letter-spacing: -0.5px; }
+.logo-mark { width: 72px; height: 72px; flex-shrink: 0; border-radius: 18px; background: #eff6ff; border: 2px solid var(--primary); display: flex; align-items: center; justify-content: center; }
+.logo-mark svg { width: 42px; height: 42px; display: block; }
 .logo span { color: var(--accent); }
 .nav-links { display: flex; gap: 26px; align-items: center; }
 .nav-links a { font-size: 0.95rem; font-weight: 600; color: var(--muted); transition: color 0.2s; }
