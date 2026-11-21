@@ -219,3 +219,148 @@ navToggle.addEventListener('click', () => {
   navLinks.style.width = '200px';
   navLinks.style.zIndex = '60';
 });
+
+// --- Hero interactive ball (based on demo page) ---
+(function () {
+  const hero = document.querySelector('.hero-visual');
+  if (!hero) return;
+
+  const ball = document.getElementById('hero-ball');
+  const throwLine = document.getElementById('throw-line');
+  const screen = document.querySelector('.device-screen');
+  const box = document.querySelector('.ball-box');
+  const fsBtn = document.getElementById('hero-fullscreen');
+  const autoBtn = document.getElementById('hero-auto');
+  const resetBtn = document.getElementById('hero-reset');
+
+  if (!ball || !box) return;
+
+  let W = 0, H = 0, SIZE = 42;
+  let x = 0, y = 0, vx = 0, vy = 0;
+  let dragging = false, pointerId = null, offsetX = 0, offsetY = 0;
+  let lastX = 0, lastY = 0, lastT = 0;
+  let autoOn = false, autoTimer = null;
+
+  const FRICTION = 0.988;
+  const RESTITUTION = 0.82;
+  const STOP = 0.06;
+
+  function measure() {
+    const r = box.getBoundingClientRect();
+    W = r.width; H = r.height;
+    SIZE = ball.offsetWidth;
+    x = Math.max(0, Math.min(W - SIZE, x));
+    y = Math.max(0, Math.min(H - SIZE, y));
+    ball.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+  }
+  function centerBall() {
+    x = (W - SIZE) / 2;
+    y = (H - SIZE) / 2;
+    vx = vy = 0;
+    ball.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+  }
+  function launchBall() {
+    if (dragging) return;
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 10 + Math.random() * 8;
+    vx = Math.cos(angle) * speed;
+    vy = Math.sin(angle) * speed;
+    throwLine.style.transform = 'rotate(' + (angle * 180 / Math.PI) + 'deg) scale(1.6)';
+    throwLine.style.opacity = '1';
+    setTimeout(function () { throwLine.style.opacity = '0'; }, 500);
+  }
+  function setAuto(on) {
+    autoOn = on;
+    if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+    if (on) {
+      autoBtn.textContent = 'Auto: On';
+      autoBtn.classList.add('active');
+      launchBall();
+      autoTimer = setInterval(launchBall, 4000);
+    } else {
+      autoBtn.textContent = 'Auto: Off';
+      autoBtn.classList.remove('active');
+    }
+  }
+
+  ball.addEventListener('pointerdown', function (e) {
+    e.preventDefault();
+    dragging = true;
+    pointerId = e.pointerId;
+    try { ball.setPointerCapture(pointerId); } catch (err) {}
+    const r = box.getBoundingClientRect();
+    const px = e.clientX - r.left;
+    const py = e.clientY - r.top;
+    offsetX = px - x;
+    offsetY = py - y;
+    lastX = e.clientX; lastY = e.clientY; lastT = performance.now();
+    vx = vy = 0;
+    ball.classList.add('grabbing');
+  });
+  window.addEventListener('pointermove', function (e) {
+    if (!dragging || e.pointerId !== pointerId) return;
+    const r = box.getBoundingClientRect();
+    const px = e.clientX - r.left;
+    const py = e.clientY - r.top;
+    let nx = px - offsetX;
+    let ny = py - offsetY;
+    nx = Math.max(0, Math.min(W - SIZE, nx));
+    ny = Math.max(0, Math.min(H - SIZE, ny));
+    const now = performance.now();
+    const dt = Math.max(now - lastT, 1);
+    vx = ((e.clientX - lastX) / dt) * 16;
+    vy = ((e.clientY - lastY) / dt) * 16;
+    lastX = e.clientX; lastY = e.clientY; lastT = now;
+    x = nx; y = ny;
+    ball.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+  }, { passive: false });
+  function endDrag(e) {
+    if (e.pointerId !== pointerId) return;
+    dragging = false;
+    pointerId = null;
+    ball.classList.remove('grabbing');
+  }
+  window.addEventListener('pointerup', endDrag);
+  window.addEventListener('pointercancel', endDrag);
+
+  function tick() {
+    if (!dragging) {
+      x += vx; y += vy;
+      vx *= FRICTION; vy *= FRICTION;
+      if (x < 0) { x = 0; vx = -vx * RESTITUTION; }
+      if (x + SIZE > W) { x = W - SIZE; vx = -vx * RESTITUTION; }
+      if (y < 0) { y = 0; vy = -vy * RESTITUTION; }
+      if (y + SIZE > H) { y = H - SIZE; vy = -vy * RESTITUTION; }
+      if (Math.abs(vx) < STOP) vx = 0;
+      if (Math.abs(vy) < STOP) vy = 0;
+      if (vx !== 0 || vy !== 0) {
+        ball.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+
+  if (fsBtn) fsBtn.addEventListener('click', function () {
+    const el = screen;
+    if (!document.fullscreenElement) {
+      const req = el.requestFullscreen || el.webkitRequestFullscreen;
+      if (req) req.call(el).catch(function () {});
+      fsBtn.textContent = '&#10005; Exit Fullscreen';
+    } else {
+      const ex = document.exitFullscreen || document.webkitExitFullscreen;
+      if (ex) ex.call(document);
+      fsBtn.textContent = '&#9974; Fullscreen';
+    }
+  });
+  if (autoBtn) autoBtn.addEventListener('click', function () { setAuto(!autoOn); });
+  if (resetBtn) resetBtn.addEventListener('click', function () {
+    setAuto(false);
+    centerBall();
+    throwLine.style.opacity = '0';
+  });
+
+  measure();
+  centerBall();
+  requestAnimationFrame(tick);
+  window.addEventListener('resize', function () { setTimeout(measure, 50); });
+})();
